@@ -11,6 +11,6 @@ ad = { 'authentication': auth }
 blog_handler = Resource(handler=handlers.BlogHandler,**ad)
 
 urlpatterns = patterns('',
-   url(r'^blog/(?P<blog_id>[^/]+)/$', blog_handler),
-   url(r'^blog/$', blog_handler),
-)
+                       # Blog
+                       url(r'^blog/(?P<blog_id>[^/]+)/$', blog_handler),
+                       url(r'^blog/$', blog_handler),

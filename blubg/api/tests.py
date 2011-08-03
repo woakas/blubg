@@ -54,8 +54,41 @@ class TestAPIAuth(ApiAuthTest):
             self.assertEquals(response.status_code, 401, 'Failed with login of %s:%s' % (username, password))
 
 
+class BlogTest(ApiAuthTest):
+    
+    def setUp(self):
+        super(BlogTest, self).setUp()
+        self.blog1=models.Blog.objects.create(name = u"Gestión y Desarrollo",
+                                              owner = self.user)
 
+    def tearDown(self):
+        super(BlogTest, self).tearDown()
+        self.blog1.delete()
 
+    def testCreateBlog(self):
+        
+        response = self.client.post('/api/blog/', {'name':"Blog Test1",'owner':self.user.id}, **self.extra)
+        self.assertEqual(response.status_code, 405)
+
+    def testGetBlog(self):
+        result="""{
+    "name": "Gestión y Desarrollo", 
+    "id": 1
+}"""
+        response = self.client.get('/api/blog/%d/'%(self.blog1.id), {}, **self.extra)
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(response.content, result)
+
+    def testUpdateBlog(self):
+        response = self.client.put('/api/blog/%d/'%(self.blog1.id), {'name':'Test Blog Rename'}, **self.extra)
+        self.assertEqual(response.status_code, 200)
+        
+        self.assertEqual(models.Blog.objects.get(id=1).name,"Test Blog Rename")
+        
+    def testDeleteBlog(self):
+        response = self.client.delete('/api/blog/%d/'%(self.blog1.id), {}, **self.extra)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(len(models.Blog.objects.all()),0)
 
 
 
