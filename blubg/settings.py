@@ -116,7 +116,8 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
-    'blog'
+    'blubg.blog',
+    'blubg.api',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
