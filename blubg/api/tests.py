@@ -93,3 +93,46 @@ class BlogTest(ApiAuthTest):
 
 
 
+class TagTest(ApiAuthTest):
+    
+    def setUp(self):
+        super(TagTest, self).setUp()
+        self.tag=models.Tag.objects.create(name = u"Desarrollo",
+                                           description = "Tag de Desarrollo")
+        
+        
+    def tearDown(self):
+        super(TagTest, self).tearDown()
+        self.tag.delete()
+    
+
+    def testCreateTag(self):
+        response = self.client.post('/api/tag/', {'name':"Django",'description':'Tag for Django'}, **self.extra)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(models.Tag.objects.get(name='Django').description,"Tag for Django")
+
+    def testGetTag(self):
+        result="""{
+    "name": "Desarrollo", 
+    "description": "Tag de Desarrollo"
+}"""
+        response = self.client.get('/api/tag/%d/'%(self.tag.id), {}, **self.extra)
+        self.assertEqual(response.status_code, 200)
+        self.assertEquals(response.content, result)
+
+    def testUpdateTag(self):
+        response = self.client.put('/api/tag/%d/'%(self.tag.id), {'name':'Test Tag Rename'}, **self.extra)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(models.Tag.objects.get(id=1).name,"Test Tag Rename")
+        self.assertEqual(models.Tag.objects.get(id=1).description,"Tag de Desarrollo")
+        
+        response = self.client.put('/api/tag/%d/'%(self.tag.id), {'description':'New Description'}, **self.extra)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(models.Tag.objects.get(id=1).name,"Test Tag Rename")
+        self.assertEqual(models.Tag.objects.get(id=1).description,"New Description")
+
+    def testDeleteTag(self):
+        response = self.client.delete('/api/tag/%d/'%(self.tag.id), {}, **self.extra)
+        self.assertEqual(response.status_code, 405)
+
+        

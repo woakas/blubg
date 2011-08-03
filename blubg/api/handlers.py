@@ -38,3 +38,44 @@ class BlogHandler(BaseHandler):
 
         blog.delete()
         return rc.DELETED 
+
+
+class TagHandler(BaseHandler):
+    allowed_methods = ('GET', 'POST','PUT')
+    model = models.Tag
+    fields = ('name', 'description')
+    
+    def read(self, request, tag_id=None):
+        base = models.Tag.objects
+        
+        if tag_id:
+            try:
+                return base.get(id=tag_id)
+            except:
+                return rc.NOT_FOUND
+        else:
+            return base.all() # Or base.filter(...)
+
+
+    def update(self, request, tag_id):
+        tag = models.Tag.objects.get(pk=tag_id)
+        tag.name = request.PUT.get('name') or tag.name
+        tag.description= request.PUT.get('description') or tag.description
+        tag.save()
+        return tag
+
+
+    def create(self, request):
+        name = request.POST.get('name')
+        description = request.POST.get('description')
+        
+        if name and description:
+            
+            
+            tag=models.Tag(name=name,description=description)
+            tag.save()
+            rc.CREATED
+        else:
+            rc.BAD_REQUEST
+
+    
