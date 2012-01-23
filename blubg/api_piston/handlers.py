@@ -78,4 +78,22 @@ class TagHandler(BaseHandler):
         else:
             rc.BAD_REQUEST
 
+
+class PostHandler(BaseHandler):
+    allowed_methods = ('GET',)
+    model = models.Post
+    fields = ('blog', 'title','date','content')
+    
+    def read(self, request, post_id=None):
+        base = models.Post.objects
+        
+        if post_id:
+            try:
+                return base.get(id=tag_id)
+            except:
+                return rc.NOT_FOUND
+        else:
+            return base.all() # Or base.filter(...)
+
+
     
