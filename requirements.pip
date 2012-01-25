@@ -1,0 +1,8 @@
+Django==1.3
+PyYAML
+coverage==3.5.1
+django-piston
+django-tastypie
+lxml==2.3.3
+tox==1.3
+djangorestframework
