@@ -9,5 +9,6 @@ urlpatterns = patterns('',
                        # url(r'^$', 'blubg.views.home', name='home'),
                        # url(r'^blubg/', include('blubg.foo.urls')),
                        url(r'^api/piston/', include('blubg.api_piston.urls')),
+                       url(r'^api/tastypie/', include('blubg.api_tastypie.urls')),
                        url(r'^admin/', include(admin.site.urls)),
 )

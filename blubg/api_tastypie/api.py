@@ -5,7 +5,7 @@ from blog import models
 
 """
 POST
-curl -H "Content-Type: application/json" -XPOST -d '{"name":"Prueba", "owner":"1"}' "http://127.0.0.1:8000/api/tastypie/v1/blog/"
+curl -H "Content-Type: application/json" -XPOST -d '{"name":"Prueba", "owner":"/api/tastypie/v1/user/1/"}' "http://127.0.0.1:8000/api/tastypie/v1/blog/"
 
 GET
 curl  "http://127.0.0.1:8000/api/tastypie/v1/blog/"
