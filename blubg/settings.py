@@ -116,8 +116,11 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.admin',
+    'djangorestframework',
     'blubg.blog',
     'blubg.api_piston',
+    'blubg.api_tastypie',
+    'blubg.api_djangorest',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )
