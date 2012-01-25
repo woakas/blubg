@@ -32,12 +32,12 @@ class TestAPIAuth(ApiAuthTest):
     def testFailUser(self):
         user = 'adminn:admin'
         bad_auth_string = 'Basic %s' % base64.encodestring(user).strip()
-        response = self.client.get('/api/blog/', {},
+        response = self.client.get('/api/piston/blog/', {},
                                    HTTP_AUTHORIZATION=bad_auth_string)
         self.assertEquals(response.status_code, 401)
 
     def testOkUser(self):
-        response = self.client.get('/api/blog/', {}, **self.extra)
+        response = self.client.get('/api/piston/blog/', {}, **self.extra)
         self.assertEqual(response.status_code, 200)
 
     def testMultiplesUsers(self):
@@ -49,7 +49,7 @@ class TestAPIAuth(ApiAuthTest):
         for username, password in users:
             auth_string = 'Basic %s' % base64.encodestring(
                 '%s:%s' % (username, password)).rstrip()
-            response = self.client.get('/api/blog/',
+            response = self.client.get('/api/piston/blog/',
                                        HTTP_AUTHORIZATION=auth_string)
             self.assertEquals(response.status_code, 401,
                               'Failed with login of %s:%s'
@@ -67,7 +67,7 @@ class BlogTest(ApiAuthTest):
         self.blog1.delete()
 
     def testCreateBlog(self):
-        response = self.client.post("/api/blog/",
+        response = self.client.post("/api/piston/blog/",
                                     {"name" : "Blog Test1",
                                      "owner" : self.user.id},
                                     **self.extra)
@@ -78,18 +78,18 @@ class BlogTest(ApiAuthTest):
     "name": "Gestión y Desarrollo", 
     "id": 1
 }"""
-        response = self.client.get('/api/blog/%d/'%(self.blog1.id), {}, **self.extra)
+        response = self.client.get('/api/piston/blog/%d/'%(self.blog1.id), {}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.content, result)
 
     def testUpdateBlog(self):
-        response = self.client.put('/api/blog/%d/' % (self.blog1.id), {'name':'Test Blog Rename'}, **self.extra)
+        response = self.client.put('/api/piston/blog/%d/' % (self.blog1.id), {'name':'Test Blog Rename'}, **self.extra)
         self.assertEqual(response.status_code, 200)
         
         self.assertEqual(models.Blog.objects.get(id=1).name,"Test Blog Rename")
         
     def testDeleteBlog(self):
-        response = self.client.delete('/api/blog/%d/'%(self.blog1.id), {}, **self.extra)
+        response = self.client.delete('/api/piston/blog/%d/'%(self.blog1.id), {}, **self.extra)
         self.assertEqual(response.status_code, 204)
         self.assertEqual(len(models.Blog.objects.all()),0)
 
@@ -104,7 +104,7 @@ class TagTest(ApiAuthTest):
         self.tag.delete()
     
     def testCreateTag(self):
-        response = self.client.post('/api/tag/', {'name':"Django",'description':'Tag for Django'}, **self.extra)
+        response = self.client.post('/api/piston/tag/', {'name':"Django",'description':'Tag for Django'}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(models.Tag.objects.get(name='Django').description,"Tag for Django")
 
@@ -113,23 +113,23 @@ class TagTest(ApiAuthTest):
     "name": "Desarrollo", 
     "description": "Tag de Desarrollo"
 }"""
-        response = self.client.get('/api/tag/%d/'%(self.tag.id), {}, **self.extra)
+        response = self.client.get('/api/piston/tag/%d/'%(self.tag.id), {}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.content, result)
 
     def testUpdateTag(self):
-        response = self.client.put('/api/tag/%d/'%(self.tag.id), {'name':'Test Tag Rename'}, **self.extra)
+        response = self.client.put('/api/piston/tag/%d/'%(self.tag.id), {'name':'Test Tag Rename'}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(models.Tag.objects.get(id=1).name,"Test Tag Rename")
         self.assertEqual(models.Tag.objects.get(id=1).description,"Tag de Desarrollo")
         
-        response = self.client.put('/api/tag/%d/'%(self.tag.id), {'description':'New Description'}, **self.extra)
+        response = self.client.put('/api/piston/tag/%d/'%(self.tag.id), {'description':'New Description'}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(models.Tag.objects.get(id=1).name,"Test Tag Rename")
         self.assertEqual(models.Tag.objects.get(id=1).description,"New Description")
 
     def testDeleteTag(self):
-        response = self.client.delete('/api/tag/%d/'%(self.tag.id), {}, **self.extra)
+        response = self.client.delete('/api/piston/tag/%d/'%(self.tag.id), {}, **self.extra)
         self.assertEqual(response.status_code, 405)
 
 
@@ -137,14 +137,14 @@ class PostTest(ApiAuthTest):
     def setUp(self):
         super(PostTest, self).setUp()
         self.post=models.Post.objects.create(name = u"Desarrollo",
-                                           description = "Post de Desarrollo")
+                                             description = "Post de Desarrollo")
 
     def tearDown(self):
         super(PostTest, self).tearDown()
         self.post.delete()
     
     def testCreatePost(self):
-        response = self.client.post('/api/post/', {'name':"Django",'description':'Post for Django'}, **self.extra)
+        response = self.client.post('/api/piston/post/', {'name':"Django",'description':'Post for Django'}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(models.Post.objects.get(name='Django').description,"Post for Django")
 
@@ -153,22 +153,22 @@ class PostTest(ApiAuthTest):
     "name": "Desarrollo", 
     "description": "Post de Desarrollo"
 }"""
-        response = self.client.get('/api/post/%d/'%(self.post.id), {}, **self.extra)
+        response = self.client.get('/api/piston/post/%d/'%(self.post.id), {}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEquals(response.content, result)
 
     def testUpdatePost(self):
-        response = self.client.put('/api/post/%d/'%(self.post.id), {'name':'Test Post Rename'}, **self.extra)
+        response = self.client.put('/api/piston/post/%d/'%(self.post.id), {'name':'Test Post Rename'}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(models.Post.objects.get(id=1).name,"Test Post Rename")
         self.assertEqual(models.Post.objects.get(id=1).description,"Post de Desarrollo")
         
-        response = self.client.put('/api/post/%d/'%(self.post.id), {'description':'New Description'}, **self.extra)
+        response = self.client.put('/api/piston/post/%d/'%(self.post.id), {'description':'New Description'}, **self.extra)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(models.Post.objects.get(id=1).name,"Test Post Rename")
         self.assertEqual(models.Post.objects.get(id=1).description,"New Description")
 
     def testDeletePost(self):
-        response = self.client.delete('/api/post/%d/'%(self.post.id), {}, **self.extra)
+        response = self.client.delete('/api/piston/post/%d/'%(self.post.id), {}, **self.extra)
         self.assertEqual(response.status_code, 405)
         
